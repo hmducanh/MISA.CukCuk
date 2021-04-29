@@ -85,7 +85,7 @@ namespace MISA.CukCuk.API.Controllers
                     devMsg = Ex.Message,
                     userMsg = "Co loi xay ra vui long lien he MISA de duoc tro giup",
                 };
-                return StatusCode(400, mes);
+                return StatusCode(500, mes);
             }
         }
     }

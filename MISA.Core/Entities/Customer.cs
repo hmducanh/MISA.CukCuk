@@ -4,6 +4,10 @@ using System.Text;
 
 namespace MISA.Core.Entities
 {
+    /// <summary>
+    /// Thông tin khách hàng
+    /// </summary>
+    /// CreatedBy : hmducanh (29/04/2021)
     public class Customer
     {
         public Guid CustomerId { get; set; }

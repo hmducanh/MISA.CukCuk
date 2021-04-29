@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MISA.Core.Entities
 {
+    /// <summary>
+    /// Thông tin nhóm khách hàng
+    /// </summary>
+    /// CreatedBy : hmducanh (29/04/2021)
     public class CustomerGroup
     {
         /// Id nhóm khách hàng

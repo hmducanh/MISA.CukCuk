@@ -10,6 +10,10 @@ namespace MISA.Infrastructure.Repository
 {
     public class BaseRepository<MISAEntity> : IBaseRepository<MISAEntity> where MISAEntity : class
     {
+        /// <summary>
+        /// Những thao tác chung với db
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
         IConfiguration configuration;
         //chuỗi kết nối DB 
         string connectionString = "" +
@@ -22,6 +26,7 @@ namespace MISA.Infrastructure.Repository
         // Lấy tên đối tượng MISAEntity
         string tableName = typeof(MISAEntity).Name;
         protected IDbConnection dbConnection;
+        // Lấy tất cả dữ liệu
         public IEnumerable<MISAEntity> GetAll()
         {
             //Kết nối DB 
@@ -33,6 +38,7 @@ namespace MISA.Infrastructure.Repository
                 return customers;
             }
         }
+        // Lấy dữ liệu theo id
         public MISAEntity GetById(Guid entityId)
         {
             // Kết nối DB 
@@ -46,6 +52,7 @@ namespace MISA.Infrastructure.Repository
                 return entity;
             }
         }
+        // thêm 1 dữ liệu   
         public int Insert(MISAEntity entity)
         {
             // Kêt nối DB 
@@ -56,6 +63,7 @@ namespace MISA.Infrastructure.Repository
                 return rowsAffect;
             }
         }
+        // cập nhật 1 dữ liệu
         public int Update(MISAEntity entity)
         {
             // Kết nối DB
@@ -67,6 +75,7 @@ namespace MISA.Infrastructure.Repository
                 return rowAffects;
             }
         }
+        // xóa 1 dữ liệu ( thực thể )
         public int Delete(Guid entityId)
         {
             // Kết nối DB 

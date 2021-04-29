@@ -8,5 +8,9 @@ namespace MISA.Infrastructure.Repository
 {
     public class CustomerGroupRepository : BaseRepository<CustomerGroup>, ICustomerGroupRepository
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
     }
 }

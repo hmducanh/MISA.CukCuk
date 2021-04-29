@@ -11,6 +11,10 @@ namespace MISA.Core.Service
 {
     public class CustomerGroupService : BaseService<CustomerGroup>, ICustomerGroupService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
         ICustomerGroupRepository _customerGroupRepository;
 
         public CustomerGroupService(ICustomerGroupRepository customerGroupRepository) : base(customerGroupRepository)

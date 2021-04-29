@@ -8,6 +8,9 @@ namespace MISA.core.Interfaces.Repository
 {
     public interface ICustomerGroupService : IBaseService<CustomerGroup>
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
     }
 }

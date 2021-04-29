@@ -6,6 +6,10 @@ namespace MISA.core.Interfaces.Repository
 {
     public interface IBaseRepository<T> where T : class
     {
+        /// <summary>
+        /// Base của Repository - các thao tác với database chung 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
         public IEnumerable<T> GetAll();
         public T GetById(Guid EntityId);
         public int Insert(T Entity);

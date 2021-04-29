@@ -7,6 +7,9 @@ namespace MISA.core.Interfaces.Repository
 {
     public interface ICustomerGroupRepository : IBaseRepository<CustomerGroup>
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
     }
 }

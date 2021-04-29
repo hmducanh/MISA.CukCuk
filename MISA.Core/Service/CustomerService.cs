@@ -11,6 +11,10 @@ namespace MISA.Core.Service
 {
     public class CustomerService : BaseService<Customer>, ICustomerService
     {
+        /// <summary>
+        /// Các dịch riêng cho Customer
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
         private ICustomerRepository _customerRepository;
 
         public CustomerService(ICustomerRepository customerRepository) : base(customerRepository)

@@ -9,8 +9,12 @@ using MISA.core.Interfaces.Repository;
 
 namespace MISA.Infrastructure.Repository
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
         public bool CheckPhoneNumberExist(string phoneNumber)
         {
             throw new NotImplementedException();

@@ -11,6 +11,9 @@ namespace MISA.Core.Interfaces.Service
     // Các dịch vụ cho khách hàng
     public interface ICustomerService : IBaseService<Customer>
     {
-        // moi thu co ban trong IbaseService
+        /// <summary>
+        /// 
+        /// </summary>
+        /// CreatedBy : hmducanh (29/04/2021)
     }
 }
