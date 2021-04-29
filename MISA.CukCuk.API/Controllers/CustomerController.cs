@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MISA.core.Interfaces.Repository;
 using MISA.Core.Entities;
 using MISA.Core.Exceptions;
-using MISA.Core.Interfaces.Repository;
+using MISA.Core.Interfaces.Service;
 using MISA.Core.Interfaces.Services;
 using System;
 using System.Collections.Generic;

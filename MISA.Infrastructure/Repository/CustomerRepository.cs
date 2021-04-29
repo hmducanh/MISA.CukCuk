@@ -1,11 +1,11 @@
-﻿using MISA.Core.Interfaces.Repository;
-using MISA.Core.Entities;
+﻿using MISA.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using MySqlConnector;
 using Dapper;
+using MISA.core.Interfaces.Repository;
 
 namespace MISA.Infrastructure.Repository
 {
