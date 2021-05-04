@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MISA.Core.AttributeCustom;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace MISA.Core.Entities
     {
         /// Id nhóm khách hàng
         public Guid CustomerGroupId { get; set; }
+        [MISARequired("Tên nhóm khách hàng không được phép để trống")]
         /// Tên nhóm khách hàng
         public string CustomerGroupName { get; set; }
         /// Mô tả

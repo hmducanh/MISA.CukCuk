@@ -1,4 +1,6 @@
 ﻿using MISA.core.Interfaces.Repository;
+using MISA.Core.AttributeCustom;
+using MISA.Core.Exceptions;
 using MISA.Core.Interfaces.Services;
 using System;
 using System.Collections.Generic;
@@ -37,15 +39,40 @@ namespace MISA.Core.Services
             var customer = _baseRepository.GetById(EntityID);
             return customer;
         }
+        // kiểm tra dữ liệu
+        private void Validate(T Entity)
+        {
+            // lay ra tat ca cac property cua class Entity
+                var properties = typeof(T).GetProperties();
+            // tim property can thuc hien ktra not null or empty
+            foreach (var property in properties)
+            {
+                var requiredProperties = property.GetCustomAttributes(typeof(MISARequired), true);
+                // neu co 
+                if (requiredProperties.Length > 0)
+                {
+                    var propertyValue = property.GetValue(Entity);
+                    // kiem tra rong
+                    if (string.IsNullOrEmpty(propertyValue.ToString()))
+                    {
+                        // lay ten bo phan can kiem tra trong thuc the
+                        var msgError = (requiredProperties[0] as MISARequired).MsgError;
+                        if(!string.IsNullOrEmpty(msgError))
+                        {
+                            throw new CustomerException($"{msgError} không được phép để trống");
+                        }
+                    }
+                }
+            }
+        }
         // thêm 1 thực thể
         public int Insert(T Entity)
         {
-            validate(Entity);
+            Validate(Entity);
             var rowAffect = _baseRepository.Insert(Entity);
             return rowAffect;
         }
-        // kiểm tra dữ liệu
-        protected virtual void validate(T Entity) { }
+        
         // cập nhật dữ liệu ( thực thể )
         public int Update(T Entity)
         {

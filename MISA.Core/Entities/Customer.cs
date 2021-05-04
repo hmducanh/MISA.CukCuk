@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MISA.Core.AttributeCustom;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +12,9 @@ namespace MISA.Core.Entities
     public class Customer
     {
         public Guid CustomerId { get; set; }
+        [MISARequired("Mã khách hàng")]
         public string CustomerCode { get; set; }
+        [MISARequired("Họ và tên")]
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int? Gender { get; set; }

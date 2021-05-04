@@ -22,13 +22,6 @@ namespace MISA.Core.Service
             _customerRepository = customerRepository;
         }
 
-        protected override void validate(Customer customer)
-        {
-            if (_customerRepository.CheckCustomerCodeExist(customer.CustomerCode))
-            {
-                throw new CustomerException("ma nhan vien da ton tai");
-            }
-        }
 
     }
 }
