@@ -18,11 +18,11 @@ namespace MISA.Core.Entities
         [MISARequired("Tên nhóm khách hàng không được phép để trống")]
         /// Tên nhóm khách hàng
         public string CustomerGroupName { get; set; }
-        /// Mô tả
+        /*/// Mô tả
         public String Description { get; set; }
         /// Ngày chỉnh sửa gần nhất
         public DateTime? ModifiedDate { get; set; }
         /// Người chỉnh sửa
-        public string ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }*/
     }
 }
