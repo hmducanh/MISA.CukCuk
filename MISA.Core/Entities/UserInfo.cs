@@ -11,7 +11,7 @@ namespace MISA.Core.Entities
         public string MemberCardCode { get; set; }
         public string CustomerGroupName { get; set; }
         public string PhoneNumber { get; set; }
-        public string DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string CompanyName { get; set; }
         public string TaxCode  { get; set; }
         public string Email { get; set; }

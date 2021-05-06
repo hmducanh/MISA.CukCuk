@@ -17,11 +17,16 @@ namespace MISA.CukCuk.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    /// <summary>
+    /// Xay dung API cho phep kiem tra va nhap khau du lieu
+    /// </summary>
+    /// CreatedBy : hmducanh (06/05/2021)
     public class UserExcel : ControllerBase
     {
         [HttpPost("import")]
         public async Task<DemoResponse<List<UserInfo>>> Import(IFormFile formFile, CancellationToken cancellationToken)
         {
+            // file dau vao khong thoa man
             if (formFile == null || formFile.Length <= 0)
             {
                 return DemoResponse<List<UserInfo>>.GetFailResult(-1, "formfile is empty");
@@ -45,8 +50,10 @@ namespace MISA.CukCuk.API.Controllers
 
                     for (int row = 3; row <= rowCount; row++)
                     {
+                        // format ngay thang nam
                         var dateOfBirth = (worksheet.Cells[row, 6].Value == null) ? "" : ((worksheet.Cells[row, 6].Value.GetType() == typeof(double)) ? worksheet.Cells[row, 6].Value.ToString().Trim() : (string)worksheet.Cells[row, 6].Value);
-                        var fmDate = FormatDate(dateOfBirth);
+                        var DOB = FormatDate(dateOfBirth);
+                        // tao entity
                         UserInfo _userInfo = new UserInfo
                         {
                             CustomerCode = (string)worksheet.Cells[row, 1].Value,
@@ -54,7 +61,7 @@ namespace MISA.CukCuk.API.Controllers
                             MemberCardCode = (string)worksheet.Cells[row, 3].Value,
                             CustomerGroupName = (string)worksheet.Cells[row, 4].Value,
                             PhoneNumber = (worksheet.Cells[row, 5].Value == null) ? "" : worksheet.Cells[row, 5].Value.ToString().Trim(),
-                            DateOfBirth = (worksheet.Cells[row, 6].Value == null) ? "" : worksheet.Cells[row, 6].Value.ToString().Trim(),
+                            DateOfBirth = DOB,
                             CompanyName = (string)worksheet.Cells[row, 7].Value,
                             TaxCode = (worksheet.Cells[row, 8].Value == null) ? "" : worksheet.Cells[row, 8].Value.ToString().Trim(),
                             Email = (string)worksheet.Cells[row, 9].Value,
@@ -62,24 +69,24 @@ namespace MISA.CukCuk.API.Controllers
                             Note = (string)worksheet.Cells[row, 11].Value,
                         };
                         // ktra du lieu
-
+                        string error_PhoneNumberExist = $"Trung ma so dien thoai {_userInfo.PhoneNumber} trong File Excel";
+                        string error_CustomerCodeExist = $"Trung ma khach hang {_userInfo.CustomerCode} trong File Excel";
+                        string error_NullCustomerCode = "Ma nhan vien khong duoc de trong";
                         // ktra trung ma so dien thoai
-                        if(checkPhoneNumberExistInFileExcel(_userInfo, list) == true)
+                        if (checkPhoneNumberExistInFileExcel(_userInfo, list) == true)
                         {
-                            throw new Exception($"Trung ma so dien thoai {_userInfo.PhoneNumber} trong File Excel");
+                            _userInfo.Status = _userInfo.Status + error_PhoneNumberExist + " ";
                         }
                         // ktra ma nhan vien bo trong
                         if(string.IsNullOrEmpty(_userInfo.CustomerCode) == true)
                         {
-                            throw new Exception("Ma nhan vien khong duoc de trong");
+                            _userInfo.Status = _userInfo.Status + error_NullCustomerCode + " ";
                         }
                         // ktra trung ma nhan vien
                         if(checkCustomerCodeExistInFileExcel(_userInfo, list) == true)
                         {
-                            throw new Exception($"Trung ma khach hang {_userInfo.CustomerCode} trong File Excel");
+                            _userInfo.Status = _userInfo.Status + error_CustomerCodeExist + " ";
                         }
-                        // fix ngay thang cho hop le
-                        _userInfo.DateOfBirth = ValidateDOB(_userInfo.DateOfBirth);
                         // them nhan vien hop le vao list
                         list.Add(_userInfo);
                     }
@@ -151,36 +158,15 @@ namespace MISA.CukCuk.API.Controllers
             return (cnt > 1);
         }
 
-        private string ValidateDOB(string DOB)
-        {
-            // validate ngay khang
-            if(DOB.Length == 10 && DOB[2] == '/' && DOB[5] == '/' )
-            {
-                // hop le
-            }
-            else
-            {
-                // chuoi chi la nam
-                if(DOB.Length == 4)
-                {
-                    string Day_month = "01/01/";
-                    DOB = Day_month + DOB;
-                }
-                // chuoi la thang nam
-                else if(DOB.Length == 7)
-                {
-                    string Day = "01/";
-                    DOB = Day + DOB;
-                }
-            }
-            return DOB;
-        }
-
         private DateTime FormatDate(string date)
         {
+            // format ngay thang nam
             DateTime res = new DateTime();
+            // ngay thang nam
             Regex rg1 = new Regex(@"^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$");
+            // thang nam
             Regex rg2 = new Regex(@"^(0[1-9]{1}|1[0-2]{1})/\d{4}$");
+            // nam
             Regex rg3 = new Regex(@"\d{4}$");
             if (rg1.IsMatch(date))
             {
@@ -204,16 +190,20 @@ namespace MISA.CukCuk.API.Controllers
 
         private bool checkCustomerGroupNameExistInDB(UserInfo userInfo)
         {
+            // check xem Nhom khach hang co thoa man khong
             using (dbConnection = new MySqlConnection(connectionString))
             {
                 var sqlCommand = $"Proc_CheckCustomerGroupName";
-                var checkCustomerGroupName = dbConnection.ExecuteScalar<bool>(sqlCommand, param: userInfo.CustomerGroupName, commandType: CommandType.StoredProcedure);
+                DynamicParameters dynamicParameters = new DynamicParameters();
+                dynamicParameters.Add("CustomerGroupName", userInfo.CustomerGroupName);
+                var checkCustomerGroupName = dbConnection.ExecuteScalar<bool>(sqlCommand, param: dynamicParameters, commandType: CommandType.StoredProcedure);
                 return checkCustomerGroupName;
             }
         }
 
         private bool Validate(UserInfo userInfo)
         {
+            // ktra chung cho input dau vao them 1 nhan vien  
             if (checkPhoneNumberExistInDB(userInfo) == false && checkCustomerCodeExistInDB(userInfo) == false && checkCustomerGroupNameExistInDB(userInfo) == true)
                 return true;
             else
@@ -225,9 +215,10 @@ namespace MISA.CukCuk.API.Controllers
         {
             if(Validate(userInfo))
             {
+                // thong tin nhan vien thoa man
                 using (dbConnection = new MySqlConnection(connectionString))
                 {
-                    //Thực thi với DB 
+                    //Thực thi với DB + them nhan vien
                     var sqlCommand = $"Proc_InsertCustomer";
                     var rowAffect = dbConnection.Execute(sqlCommand, param: userInfo, commandType: CommandType.StoredProcedure);
                     return StatusCode(201, rowAffect);
