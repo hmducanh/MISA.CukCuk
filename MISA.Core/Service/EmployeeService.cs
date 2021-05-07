@@ -26,11 +26,29 @@ namespace MISA.Core.Service
         public string GetMaximumEmployeeCode()
         {
             string res = _employeeRepository.GetMaximumEmployeeCode();
-            for(int i = res.Length - 1; i >= 0; i++)
+            string result = "";
+            int pos = res.Length;
+            for(int i = res.Length - 1; i >= 2; i--)
             {
-                if()
+                if (res[i] == '9')
+                    result = "0" + result;
+                else
+                {
+                    pos = i;
+                    result = (res[i] - '0' + 1).ToString() + result;
+                    break;
+                }
             }
-            return res;
+            if(pos == res.Length)
+            {
+                result = "NV1" + result;
+            }
+            else
+            {
+                for (int i = pos - 1; i >= 0; i--)
+                    result = res[i] + result;
+            }
+            return result;
                 
         }
     }

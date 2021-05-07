@@ -39,7 +39,7 @@ namespace MISA.CukCuk.API.Controllers
         [HttpGet("maxEmployeeId")]
         public IActionResult GetMaxEmployeeCode()
         {
-            string maxEmployeeId = _employeeRepository.GetMaximumEmployeeCode();
+            string maxEmployeeId = _employeeService.GetMaximumEmployeeCode();
             if(!string.IsNullOrEmpty(maxEmployeeId))
             {
                 return Ok(maxEmployeeId);
