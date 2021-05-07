@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MISA.core.Interfaces.Repository;
+using MISA.Core.Interfaces.Repository;
 using MISA.Core.Interfaces.Service;
 using MISA.Core.Service;
 using MISA.Core.Services;
@@ -42,6 +43,8 @@ namespace MISA.CukCuk.API
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustomerGroupService, CustomerGroupService>();
             services.AddScoped<ICustomerGroupRepository, CustomerGroupRepository>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         }
 

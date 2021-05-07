@@ -68,7 +68,7 @@ namespace MISA.CukCuk.API.Controllers
                     return NoContent();
                 }
             }
-            catch(CustomerException Ex)
+            catch(CustomException Ex)
             {
                 var mes = new
                 {

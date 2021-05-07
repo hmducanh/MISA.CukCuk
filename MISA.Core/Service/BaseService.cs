@@ -59,7 +59,7 @@ namespace MISA.Core.Services
                         var msgError = (requiredProperties[0] as MISARequired).MsgError;
                         if(!string.IsNullOrEmpty(msgError))
                         {
-                            throw new CustomerException($"{msgError} không được phép để trống");
+                            throw new CustomException($"{msgError} không được phép để trống");
                         }
                     }
                 }

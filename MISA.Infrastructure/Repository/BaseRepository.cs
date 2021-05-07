@@ -16,12 +16,12 @@ namespace MISA.Infrastructure.Repository
         /// CreatedBy : hmducanh (29/04/2021)
         IConfiguration configuration;
         //chuỗi kết nối DB 
-        string connectionString = "" +
+        protected string connectionString = "" +
                 "Host = 47.241.69.179;" +
                 "Port=3306;" +
                 "User Id = dev;" +
                 "Password = 12345678;" +
-                "Database =  MF0_NVManh_CukCuk02;" +
+                "Database =  TEST.MISA.AMIS;" +
                 "ConvertZeroDateTime=True";
         // Lấy tên đối tượng MISAEntity
         string tableName = typeof(MISAEntity).Name;
