@@ -23,6 +23,12 @@ namespace MISA.Core.Service
             _employeeRepository = employeeRepository;
         }
 
+        public bool CheckEmployeeCodeExist(string employeeCode)
+        {
+            bool res = _employeeRepository.CheckEmployeeCodeExist(employeeCode);
+            return res;
+        }
+
         public string GetMaximumEmployeeCode()
         {
             string res = _employeeRepository.GetMaximumEmployeeCode();

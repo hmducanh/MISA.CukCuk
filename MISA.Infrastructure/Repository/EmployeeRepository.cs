@@ -11,9 +11,16 @@ namespace MISA.Infrastructure.Repository
 {
     public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
-        public bool CheckCustomerCodeExist(string customerCode)
+        public bool CheckEmployeeCodeExist(string employeeCode)
         {
-            throw new NotImplementedException();
+            using (dbConnection = new MySqlConnection(connectionString))
+            {
+                var sqlCommand = $"Proc_CheckEmployeeCodeExist";
+                DynamicParameters dynamicParameters = new DynamicParameters();
+                dynamicParameters.Add("EmployeeCode", employeeCode);
+                var EmployeeCodeExist = dbConnection.ExecuteScalar<bool>(sqlCommand, param: dynamicParameters, commandType: CommandType.StoredProcedure);
+                return EmployeeCodeExist;
+            }
         }
 
         public string GetMaximumEmployeeCode()

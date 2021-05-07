@@ -9,6 +9,7 @@ namespace MISA.Core.Interfaces.Service
     // cac dich vu cho nhan vien
     public interface IEmployeeService : IBaseService<Employee>
     {
+        public bool CheckEmployeeCodeExist(string employeeCode);
         public string GetMaximumEmployeeCode();
     }
 }

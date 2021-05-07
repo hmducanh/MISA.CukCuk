@@ -9,7 +9,7 @@ namespace MISA.Core.Interfaces.Repository
     public interface IEmployeeRepository : IBaseRepository<Employee>
     {
         // ktra trung ma nhan vien
-        public bool CheckCustomerCodeExist(string customerCode);
+        public bool CheckEmployeeCodeExist(string customerCode);
 
         public string GetMaximumEmployeeCode();
     }
