@@ -16,13 +16,13 @@ namespace MISA.CukCuk.API.Controllers
     {
         IEmployeeService _employeeService;
         IEmployeeRepository _employeeRepository;
-
+        // tiem
         public EmployeeController(IEmployeeService employeeService, IEmployeeRepository employeeRepository)
         {
             _employeeService = employeeService;
             _employeeRepository = employeeRepository;   
         }
-        
+        // lay tat ca nhan vien
         [HttpGet]
         public IActionResult Get()
         {
@@ -36,7 +36,8 @@ namespace MISA.CukCuk.API.Controllers
                 return NoContent();
             }
         }
-        [HttpGet("maxEmployeeId")]
+        // lay ma nhan vien lon nhat + 1
+        [HttpGet("maxEmployeeCode")]
         public IActionResult GetMaxEmployeeCode()
         {
             string maxEmployeeId = _employeeService.GetMaximumEmployeeCode();
@@ -49,6 +50,7 @@ namespace MISA.CukCuk.API.Controllers
                 return NoContent();
             }
         }
+        // gui 1 nhan vien len
         [HttpPost]
         public IActionResult Post([FromBody] Employee employee)
         {
@@ -84,7 +86,7 @@ namespace MISA.CukCuk.API.Controllers
                 return StatusCode(500, mes);
             }
         }
-
+        // xoa 1 nhan vien
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -98,7 +100,7 @@ namespace MISA.CukCuk.API.Controllers
                 return NoContent();
             }
         }
-
+        // chinh sua 1 nhan vien co san
         [HttpPut]
         public IActionResult Update(Employee employee)
         {
@@ -111,6 +113,13 @@ namespace MISA.CukCuk.API.Controllers
             {
                 return NoContent();
             }
+        }
+        // kiem tra ma nhan vien co ton tai hay khong
+        [HttpGet("{EmployeeCode}")]
+        public IActionResult CheckEmployeeCodeExist(string EmployeeCode)
+        {
+            var check = _employeeService.CheckEmployeeCodeExist(EmployeeCode);
+            return Ok(check);
         }
     }
 }

@@ -32,6 +32,10 @@ namespace MISA.Core.Service
         public string GetMaximumEmployeeCode()
         {
             string res = _employeeRepository.GetMaximumEmployeeCode();
+            if(res == null)
+            {
+                return "NV0001";
+            }
             string result = "";
             int pos = res.Length;
             for(int i = res.Length - 1; i >= 2; i--)

@@ -13,6 +13,7 @@ namespace MISA.Infrastructure.Repository
     {
         public bool CheckEmployeeCodeExist(string employeeCode)
         {
+            // kiem tra trung ma nhan vien
             using (dbConnection = new MySqlConnection(connectionString))
             {
                 var sqlCommand = $"Proc_CheckEmployeeCodeExist";
@@ -25,9 +26,10 @@ namespace MISA.Infrastructure.Repository
 
         public string GetMaximumEmployeeCode()
         {
+            // lay ma nhan vien lon nhan
             using (dbConnection = new MySqlConnection(connectionString))
             {
-                var sqlCommand = "GetMaxEmployeeCode";
+                var sqlCommand = "Proc_GetMaxEmployeeCode";
                 string MaxEmployeeCode = dbConnection.QueryFirstOrDefault<string>(sqlCommand, commandType: CommandType.StoredProcedure);
                 return MaxEmployeeCode;
             }
