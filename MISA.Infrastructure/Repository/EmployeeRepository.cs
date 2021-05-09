@@ -11,6 +11,10 @@ namespace MISA.Infrastructure.Repository
 {
     public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
+        /// <summary>
+        /// thao tac voi database va co nhung dich vu rieng
+        /// </summary>
+        /// CreatedBy : hmducanh (08/05/2021)
         public bool CheckEmployeeCodeExist(string employeeCode)
         {
             // kiem tra trung ma nhan vien

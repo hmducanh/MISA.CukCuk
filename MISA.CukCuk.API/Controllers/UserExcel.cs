@@ -204,10 +204,22 @@ namespace MISA.CukCuk.API.Controllers
         private bool Validate(UserInfo userInfo)
         {
             // ktra chung cho input dau vao them 1 nhan vien  
-            if (checkPhoneNumberExistInDB(userInfo) == false && checkCustomerCodeExistInDB(userInfo) == false && checkCustomerGroupNameExistInDB(userInfo) == true)
-                return true;
-            else
-                return false;
+            // trung so dien thoai
+            if(checkPhoneNumberExistInDB(userInfo) == false)
+            {
+                throw new Exception("Trung so dien thoai da ton tai trong database");
+            }
+            // trung ma nhan vien
+            else if (checkCustomerCodeExistInDB(userInfo) == false)
+            {
+                throw new Exception("Trung ma nhan vien da ton tai trong database");
+            }
+            // trung ma khach hang
+            else if (checkCustomerGroupNameExistInDB(userInfo) == false)
+            {
+                throw new Exception("Trung nhom khach hang da ton tai trong database");
+            }
+            return false;
         }
 
         [HttpPost]

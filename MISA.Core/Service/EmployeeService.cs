@@ -25,12 +25,14 @@ namespace MISA.Core.Service
 
         public bool CheckEmployeeCodeExist(string employeeCode)
         {
+            // xu ly trung ma nhan vien
             bool res = _employeeRepository.CheckEmployeeCodeExist(employeeCode);
             return res;
         }
 
         public string GetMaximumEmployeeCode()
         {
+            // xu ly va tra ve ma nhan vien lon nhat +1
             string res = _employeeRepository.GetMaximumEmployeeCode();
             if(res == null)
             {

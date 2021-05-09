@@ -6,7 +6,10 @@ using System.Text;
 
 namespace MISA.Core.Interfaces.Service
 {
-    // cac dich vu cho nhan vien
+    /// <summary>
+    /// cac dich vu cho nhan vien
+    /// </summary>
+    /// CreatedBy : hmducanh (08/05/2021)
     public interface IEmployeeService : IBaseService<Employee>
     {
         public bool CheckEmployeeCodeExist(string employeeCode);

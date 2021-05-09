@@ -21,7 +21,7 @@ namespace MISA.Infrastructure.Repository
                 "Port=3306;" +
                 "User Id = dev;" +
                 "Password = 12345678;" +
-                "Database =  TEST.MISA.AMIS;" +
+                "Database =  MF823_AMIS_HDANH;" +
                 "ConvertZeroDateTime=True";
         // Lấy tên đối tượng MISAEntity
         string tableName = typeof(MISAEntity).Name;
@@ -83,7 +83,9 @@ namespace MISA.Infrastructure.Repository
             {
                 // 3. Thực thi hành động
                 var sqlCommand = $"Proc_Delete{tableName}";
-                var rowsAffects = dbConnection.Execute(sqlCommand, param: new { CustomerId = entityId }, commandType: CommandType.StoredProcedure);
+                DynamicParameters dynamicParameters = new DynamicParameters();
+                dynamicParameters.Add($"@{tableName}Id", entityId);
+                var rowsAffects = dbConnection.Execute(sqlCommand, param: dynamicParameters, commandType: CommandType.StoredProcedure);
                 return rowsAffects;
             }
         }

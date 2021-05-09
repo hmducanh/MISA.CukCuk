@@ -12,6 +12,10 @@ namespace MISA.CukCuk.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    /// <summary>
+    /// Controller quan ly nhan vien
+    /// </summary>
+    /// CreatedBy : hmducanh (08/05/2021)
     public class EmployeeController : ControllerBase
     {
         IEmployeeService _employeeService;
