@@ -144,6 +144,11 @@ export default {
 
 <style scoped>
 /* css input */
+
+.bar { 
+    display: flex;   
+}
+
 .search-table {
     height: 30px;
     width: 200px;
@@ -158,6 +163,8 @@ export default {
     outline: none;
     box-sizing: border-box;
     left: 200px;
+    margin-left: auto;
+    margin-right: 20px;
 }
 
 .search-table:hover {
