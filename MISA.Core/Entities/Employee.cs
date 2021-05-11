@@ -14,14 +14,14 @@ namespace MISA.Core.Entities
         public string EmployeeCode { get; set; }
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string Gender { get; set; }
+        public int Gender { get; set; }
         public string GenderName
         {
             get
             {
-                if (Gender == "0")
+                if (Gender == 0)
                     return "Nam";
-                else if (Gender == "1")
+                else if (Gender == 1)
                     return "Nữ";
                 else
                     return "Khác";

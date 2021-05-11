@@ -21,8 +21,9 @@
         <div class = "grid">
             <table id = "tblListEmployee" class = "table">
                 <thead>
-                    <tr>
+                    <tr class="line0">
                         <th>
+                            <input type="checkbox">
                         </th>
                         <th>MÃ NHÂN VIÊN</th>
                         <th>TÊN NHÂN VIÊN</th>
@@ -39,7 +40,7 @@
                 </thead>
                 <tbody>
                     <tr @dblclick="trOnDbClick()">
-                        <td></td>
+                        <td><input type="checkbox"></td>
                         <td>NV0000</td>
                         <td>Nguyễn Phú Trọng</td>
                         <td>Nam</td>
@@ -54,7 +55,7 @@
                     </tr>
                     <!-- get data from var -->
                     <tr v-for="employee in employees" :key='employee.employeeId' @dblclick="trOnDbClick(employee.employeeId)">
-                        <td></td>
+                        <td><input type="checkbox"></td>
                         <td>{{employee.employeeCode}}</td>
                         <td>{{employee.fullName}}</td>
                         <td>{{employee.genderName}}</td>
@@ -78,6 +79,7 @@
         :employee="selectedEmployee"
         :formMode="dialogFormMode"
         :departments="departments"
+        :Gender="Gender"
         />
     </div>
         
@@ -121,8 +123,6 @@ export default {
         },
         // double click vao 1 hang trong bang de edit
         trOnDbClick(EmployeeId) {
-            this.dialogFormMode = "edit";
-            this.isShowDialogDetail = true;
             axios.get("http://localhost:8080/api/v1/Employee/GetById/" + EmployeeId).then(res => {
                 this.selectedEmployee = res.data;
                 const _dateOfBirth = new Date(this.selectedEmployee.dateOfBirth); // ngay sinh
@@ -142,9 +142,11 @@ export default {
                     (_identifyDate.getMonth() + 1).toString() +
                     "-" +
                     (_identifyDate.getDate() < 10 ? "0" : "") +
-                    _identifyDate.getDate().toString();
-                console.log(res.data);
-                console.log("######  " + this.selectedEmployee.departmentName);
+                    _identifyDate.getDate().toString();               
+                this.Gender = parseInt(res.data.gender);
+                console.log(this.Gender, "getbyid");      
+                this.dialogFormMode = "edit";
+                this.isShowDialogDetail = true;
             }).catch(res => {
                 console.log(res);
             });
@@ -156,6 +158,7 @@ export default {
                 this.dialogFormMode = "add";
                 this.isShowDialogDetail = true;
                 this.selectedEmployee.employeeCode = res.data;
+                this.Gender = null;
             }).catch(res => {
                 console.log(res);
             });
@@ -164,6 +167,8 @@ export default {
         hideDialog() {
             //an dialog
             this.isShowDialogDetail = false;
+            // load lai data
+            this.loadData();
             
         },
         formatDateDDMMYYYYnew(date) {
@@ -194,6 +199,7 @@ export default {
             isShowDialogDetail: false,
             selectedEmployee: {},
             dialogFormMode: "add",
+            Gender: 0,
         };
     },
     watch : {},
@@ -205,6 +211,10 @@ export default {
 
 .bar { 
     display: flex;   
+}
+
+.line0 > th {
+    font-size : 14px;
 }
 
 .search-table {

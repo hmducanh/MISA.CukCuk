@@ -34,12 +34,17 @@
           </div>
           <div class="GenderContainer">
             <label>Giới tính</label><br>
-            <input type="radio" id="male" name="gender" value="0" v-model="employee.Gender">
-            <label for="male">Nam</label><br>
-            <input type="radio" id="female" name="gender" value="1" v-model="employee.Gender">
-            <label for="female">Nữ</label><br>
-            <input type="radio" id="other" name="gender" value="2" v-model="employee.Gender">
-            <label for="other">Khác</label>
+            <a-radio-group v-model="employee.gender">
+            <a-radio :value="0">
+              Nam
+            </a-radio>
+            <a-radio :value="1">
+              Nữ
+            </a-radio>
+            <a-radio :value="2">
+              Khác
+            </a-radio>
+          </a-radio-group>
           </div>
         </div>
         <div class="m-row row-2">
@@ -134,6 +139,10 @@ export default {
       type: Array,
       default: null,
     },
+    Gender: {
+      type: Number,
+      default: null,
+    }
   },
   methods : {
     // dong dialog
@@ -144,7 +153,6 @@ export default {
           this.isCheckEmployeeCode = true;
           this.isCheckDepartment = true;
           this.isCheckFullName = true;
-        console.log(this.formMode);
           
       },
       check_validate()
@@ -185,29 +193,33 @@ export default {
         }
         return this.check;
       },
-    // an vao save button 
-    // created by : hmducanh (10/05/2021)
+      // an vao save button 
+      // created by : hmducanh (10/05/2021)
       btnSaveOnClick() {
         if(this.check_validate() == false)
         {
           return ;
         }
         // check formmode
+        console.log(this.employee);
         if(this.formMode == "add")
         {
           axios.post("http://localhost:8080/api/v1/Employee", this.employee).then(res => {
           console.log(res);
+          this.$emit("hideDialog");
           }).catch(res => {
             console.log(res);
           });
         }
         if(this.formMode == "edit")
         {
-          console.log(2);
+          axios.put("http://localhost:8080/api/v1/Employee", this.employee).then(res => {
+          console.log(res);
+          this.$emit("hideDialog");
+          }).catch(res => {
+            console.log(res);
+          });
         }
-        // neu du lieu hop le, thuc hien thao tac post
-        
-        console.log(this.employee);
       }
     },
   data() {
@@ -216,6 +228,7 @@ export default {
       isCheckDepartment : true,
       isCheckFullName : true,
       check : true,
+      customGender : this.Gender,
     };
   }
 }
@@ -228,8 +241,9 @@ input[type="text"],
 input[type="date"] {
   height: 32px;
   border: 1px solid #bbbbbb;
-  padding-left: 16px;
+  padding-left: 10px;
   padding-right: 16px;
+  padding-bottom: 3px;
   border-radius: 4px;
   outline: none;
   box-sizing: border-box;
