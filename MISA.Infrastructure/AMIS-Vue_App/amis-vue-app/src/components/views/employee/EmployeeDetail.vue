@@ -10,6 +10,11 @@
     <div class="dialog-content">
       <div class="dialog-header">
         <div class="dialog-title">THÔNG TIN NHÂN VIÊN</div>
+        <div class="more-info-item">
+          <div class="logo-item nav-item-19">
+            
+          </div>
+        </div>
         <div class="dialog-close-button" @click="btnCloseOnClick()">
           &#x2715;
         </div>
@@ -17,84 +22,85 @@
         <div class="m-row row-1">
           <div>
             <label>Mã(<span style="color: red">*</span>)</label><br>
-            <input type="text" class="txtEmployeeCode" v-model="txtEmployeeCode" :class="{ 'error-input': !isCheckEmpolyeeCode}">
+            <input type="text" class="txtEmployeeCode" v-model="employee.employeeCode" :class="{ 'error-input': !isCheckEmployeeCode}">
           </div>
           <div>
             <label>Tên(<span style="color: red">*</span>)</label><br>
-            <input type="text" class="txtFullName" v-model="txtFullName" :class="{ 'error-input': !isCheckFullName}">
+            <input type="text" class="txtFullName" v-model="employee.fullName" :class="{ 'error-input': !isCheckFullName}">
           </div>
           <div>
             <label>Ngày sinh</label><br>
-            <input type="date" class="dateDateOfBirth">
+            <input type="date" class="dateDateOfBirth" v-model="employee.dateOfBirth">
           </div>
-          <div>
+          <div class="GenderContainer">
             <label>Giới tính</label><br>
-            <input type="checkbox" id="" value="0">
-            <label>Nam</label>
-            <input type="checkbox" id="" value="1">
-            <label>Nữ</label>
-            <input type="checkbox" id="" value="2">
-            <label>Khác</label>
+            <input type="radio" id="male" name="gender" value="0" v-model="employee.Gender">
+            <label for="male">Nam</label><br>
+            <input type="radio" id="female" name="gender" value="1" v-model="employee.Gender">
+            <label for="female">Nữ</label><br>
+            <input type="radio" id="other" name="gender" value="2" v-model="employee.Gender">
+            <label for="other">Khác</label>
           </div>
         </div>
         <div class="m-row row-2">
           <div>
             <label>Đơn vị(<span style="color: red">*</span>)</label><br>
-            <select name="" id="comboboxDepartment" v-model="comboboxDepartment" :class="{ 'error-input': !isCheckDepartment}">
-              <option value="0">Phòng Nhân Sự</option>
+            <select name="" id="comboboxDepartment" v-model="employee.departmentName" :class="{ 'error-input': !isCheckDepartment}">
+              <option v-for="department in departments" :key='department.departmentId'>{{department.departmentName}}</option>
+              
             </select>
           </div>
           <div>
             <label>Số CMND</label><br>
-            <input type="text" class="txtIdentifyNumber">
+            <input type="text" class="txtIdentifyNumber" v-model="employee.identifyNumber">
           </div>
           <div>
             <label>Ngày cấp</label><br>
-            <input type="date" class="dateIdentifyDate">
+            <input type="date" class="dateIdentifyDate" v-model="employee.identifyDate">
           </div>
         </div>
         <div class="m-row row-3">
           <div>
             <label>Chức danh</label><br>
-            <input type="text" class="txtPositionName">
+            <input type="text" class="txtPositionName" v-model="employee.positionName">
           </div>
           <div>
             <label>Nơi cấp</label><br>
-            <input type="text" class="txtIdentifyPlace">
+            <input type="text" class="txtIdentifyPlace" v-model="employee.identifyPlace">
           </div>
         </div>
         <div class="m-row row-4">
           <div>
             <label>Địa chỉ</label><br>
-            <input type="text" class="txtAddress">
+            <input type="text" class="txtAddress" v-model="employee.address">
           </div>
         </div>
         <div class="m-row row-5">
           <div>
             <label>ĐT di động</label><br>
-            <input type="text" class="txtPhoneNumber">
+            <input type="text" class="txtPhoneNumber" v-model="employee.phoneNumber">
           </div>
           <div>
             <label>ĐT cố định</label><br>
-            <input type="text" class="txtConstantPhoneNumber">
+            <input type="text" class="txtConstantPhoneNumber" v-model="employee.constantPhoneNumber">
           </div>
           <div>
             <label>Email</label><br>
-            <input type="text" class="txtEmail">
+            <input type="text" class="txtEmail" v-model="employee.email">
           </div>
         </div>
         <div class="m-row row-6">
           <div>
             <label>Tài khoản ngân hàng</label><br>
-            <input type="text" class="txtBankAccount">
+            <input type="text" class="txtBankAccount" v-model="employee.bankAccount">
           </div>
           <div>
             <label>Tên ngân hàng</label><br>
-            <input type="text" class="txtBankName">
+            <input type="text" class="txtBankName" v-model="employee.bankName">
           </div>
           <div>
             <label>Chi nhánh</label><br>
-            <input type="text" class="txtBankBranch">
+            <input type="text" class="txtBankBranch" v-model="employee.bankBranch">
           </div>
         </div>
       </div>
@@ -109,12 +115,24 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   props : {
-
     isShow: {
         type: Boolean,
         default: false,
+    },
+    employee: {
+        type: Object,
+        default: null,
+    },
+    formMode: {
+      type: String,
+      default: "add",
+    },
+    departments: {
+      type: Array,
+      default: null,
     },
   },
   methods : {
@@ -123,26 +141,29 @@ export default {
         this.$emit("hideDialog");
           this.isCheckEmpolyeeCode = true;
           this.isCheckFullName = true;
+          this.isCheckEmployeeCode = true;
+          this.isCheckDepartment = true;
+          this.isCheckFullName = true;
+        console.log(this.formMode);
           
       },
-    // an vao save button 
-    // created by : hmducanh (10/05/2021)
-      btnSaveOnClick() {
+      check_validate()
+      {
         // kiem tra du lieu
         this.check = true;
         // 1. Khong duoc de trong cac o bat buoc nhap
         // 1.1 Ma nhan vien trong
-        if(this.txtEmployeeCode == "")
+        if(!this.employee.employeeCode)
         {
           this.check = false;
-          this.isCheckEmpolyeeCode = false;
+          this.isCheckEmployeeCode = false;
         }
         else
         {
-          this.isCheckEmpolyeeCode = true;
+          this.isCheckEmployeeCode = true;
         }
         // 1.2 Ten de trong
-        if(this.txtFullName == "")
+        if(!this.employee.fullName)
         {
           this.check = false;
           this.isCheckFullName = false;
@@ -153,7 +174,7 @@ export default {
         }
         // 1.3 Don vi de trong
         console.log(this.comboboxDepartment);
-        if(this.comboboxDepartment == "")
+        if(!this.employee.departmentName)
         {
           this.check = false;
           this.isCheckDepartment = false;
@@ -162,15 +183,36 @@ export default {
         {
           this.isCheckDepartment = true;
         }
+        return this.check;
+      },
+    // an vao save button 
+    // created by : hmducanh (10/05/2021)
+      btnSaveOnClick() {
+        if(this.check_validate() == false)
+        {
+          return ;
+        }
+        // check formmode
+        if(this.formMode == "add")
+        {
+          axios.post("http://localhost:8080/api/v1/Employee", this.employee).then(res => {
+          console.log(res);
+          }).catch(res => {
+            console.log(res);
+          });
+        }
+        if(this.formMode == "edit")
+        {
+          console.log(2);
+        }
         // neu du lieu hop le, thuc hien thao tac post
+        
+        console.log(this.employee);
       }
     },
   data() {
     return {
-      txtEmployeeCode : "",
-      txtFullName : "",
-      comboboxDepartment : "",
-      isCheckEmpolyeeCode : true,
+      isCheckEmployeeCode : true,
       isCheckDepartment : true,
       isCheckFullName : true,
       check : true,
@@ -196,22 +238,13 @@ input[type="date"] {
 
 .error-input {
   border-color: red !important;
-
 }
 
-input[type="text"]:hover {
-  border-color: #019160;
+.nav-item-19 {
+  position: absolute;
+  right: 34px;
+  top: 10px;
+  background-position: -88px -145px;
 }
 
-v-enter-from {
-  transform: translateY(-200px);
-}
-
-v-enter-to {
-  transform: translateY(0px);
-}
-
-v-enter-active {
-  transition: transform 0.5s;
-}
 </style>

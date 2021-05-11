@@ -12,8 +12,10 @@
     <!-- input search va button refresh -->
     <div class = "content-table">
       <div class = "bar">
-            <input type="text" class = "search-table">
-            <div class = "refresh-button"></div>
+            <input type="text" class = "search-table" placeholder="Tìm theo mã, tên nhân viên">
+            <div class = "logo-item search-icon"></div>
+            <div class = "logo-item refresh-button" @click="loadData()"></div>
+            <div class = "logo-item export-button"></div>
         </div>
         <!-- Tao bang data -->
         <div class = "grid">
@@ -51,7 +53,7 @@
                         <td></td>
                     </tr>
                     <!-- get data from var -->
-                    <tr v-for="employee in employees" :key='employee.employeeId' @dblclick="trOnDbClick()">
+                    <tr v-for="employee in employees" :key='employee.employeeId' @dblclick="trOnDbClick(employee.employeeId)">
                         <td></td>
                         <td>{{employee.employeeCode}}</td>
                         <td>{{employee.fullName}}</td>
@@ -69,9 +71,13 @@
             </table>
     </div>
     <!-- tranfer data to employeedetail -->
+        
         <EmployeeDetail
         :isShow="isShowDialogDetail"
         @hideDialog="hideDialog()"
+        :employee="selectedEmployee"
+        :formMode="dialogFormMode"
+        :departments="departments"
         />
     </div>
         
@@ -94,22 +100,71 @@ export default {
         }).catch(res => {
             console.log(res);
         });
+
+        axios.get("http://localhost:8080/api/v1/Department").then(res => {
+            this.departments = res.data;
+            console.log(res);
+        }).catch(res => {
+            console.log(res);
+        });
     },
     props : [],
     methods : {
-        // double click vao 1 hang trong bang
-        trOnDbClick() {
+        loadData() {
+            // load du lieu
+            axios.get("http://localhost:8080/api/v1/Employee").then(res => {
+                this.employees = res.data;
+                console.log(res);
+            }).catch(res => {
+                console.log(res);
+            });
+        },
+        // double click vao 1 hang trong bang de edit
+        trOnDbClick(EmployeeId) {
+            this.dialogFormMode = "edit";
             this.isShowDialogDetail = true;
+            axios.get("http://localhost:8080/api/v1/Employee/GetById/" + EmployeeId).then(res => {
+                this.selectedEmployee = res.data;
+                const _dateOfBirth = new Date(this.selectedEmployee.dateOfBirth); // ngay sinh
+                    this.selectedEmployee.dateOfBirth =
+                    _dateOfBirth.getFullYear().toString() +
+                    "-" +
+                    (_dateOfBirth.getMonth() + 1 < 10 ? "0" : "") +
+                    (_dateOfBirth.getMonth() + 1).toString() +
+                    "-" +
+                    (_dateOfBirth.getDate() < 10 ? "0" : "") +
+                    _dateOfBirth.getDate().toString();
+                const _identifyDate = new Date(this.selectedEmployee.identifyDate); // ngay cap cmnd
+                    this.selectedEmployee.identifyDate =
+                    _identifyDate.getFullYear().toString() +
+                    "-" +
+                    (_identifyDate.getMonth() + 1 < 10 ? "0" : "") +
+                    (_identifyDate.getMonth() + 1).toString() +
+                    "-" +
+                    (_identifyDate.getDate() < 10 ? "0" : "") +
+                    _identifyDate.getDate().toString();
+                console.log(res.data);
+                console.log("######  " + this.selectedEmployee.departmentName);
+            }).catch(res => {
+                console.log(res);
+            });
         },
         // click vao button add employee
         btnAddOnClick() {
-            this.isShowDialogDetail = true;
+            axios.get("http://localhost:8080/api/v1/Employee/maxEmployeeCode").then(res => {
+                this.selectedEmployee = {};
+                this.dialogFormMode = "add";
+                this.isShowDialogDetail = true;
+                this.selectedEmployee.employeeCode = res.data;
+            }).catch(res => {
+                console.log(res);
+            });
         },
         // hien thi - an dialog
         hideDialog() {
             //an dialog
-            console.log(1);
             this.isShowDialogDetail = false;
+            
         },
         formatDateDDMMYYYYnew(date) {
             //chuyen doi ngay thang de hien thi duoc
@@ -135,7 +190,10 @@ export default {
     data() {
         return {
             employees : [],
+            departments : [],
             isShowDialogDetail: false,
+            selectedEmployee: {},
+            dialogFormMode: "add",
         };
     },
     watch : {},
@@ -151,10 +209,10 @@ export default {
 
 .search-table {
     height: 30px;
-    width: 200px;
+    width: 220px;
     border: 1px solid #bbbbbb;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 10px;
+    padding-right: 30px;
     padding-top: 8px;
     padding-bottom: 8px;
     margin-top: 16px;
@@ -168,6 +226,33 @@ export default {
 }
 
 .search-table:hover {
-        border-color: #019160;
-    }
+    border-color: #019160;
+}
+
+.refresh-button {
+    background-position: -1096px -88px;
+    position: relative;
+    top: 20px;
+    right: 10px;
+}
+
+.refresh-button:active {
+    background-color: rgb(201, 201, 201);
+}
+
+.export-button {
+    background-position: -704px -200px;
+    position: relative;
+    top: 20px;
+    right: 10px;
+
+}
+
+.search-icon {
+    background-position: -992px -360px;
+    position: absolute;
+    margin-top: 22px;
+    right: 100px;
+}
+
 </style>

@@ -5,7 +5,7 @@
     left: 178px;
     right: 0px;
     bottom: 0px;
-    background-color: #919399;
+    background-color: #F4F5F6;
     border-top: 1px solid #dedede;
     padding-left: 24px;
     padding-right: 24px;
@@ -30,6 +30,6 @@
 }
   
 .content-table {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   height: calc(100vh - 40px - 48px - 36px);
 }

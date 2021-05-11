@@ -123,7 +123,25 @@ namespace MISA.CukCuk.API.Controllers
         public IActionResult CheckEmployeeCodeExist(string EmployeeCode)
         {
             var check = _employeeService.CheckEmployeeCodeExist(EmployeeCode);
-            return Ok(check);
+            if (check != null)
+                return Ok(check);
+            else
+                return NoContent();
+        }
+        
+        // lay mot nhan vien = id
+        [HttpGet("GetById/{employeeId}")]
+        public IActionResult GetById(Guid employeeId)
+        {
+            Employee employee = _employeeService.GetById(employeeId);
+            if(employee != null)
+            {
+                return Ok(employee);
+            }
+            else
+            {
+                return NoContent();
+            }
         }
     }
 }
