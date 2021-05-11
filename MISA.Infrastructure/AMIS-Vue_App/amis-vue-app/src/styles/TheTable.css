@@ -37,10 +37,11 @@ table tr{
     cursor: pointer;
 }
 
-table tr:hover{
-    background-color: #eb6868;
-}
+/*  table tr:hover{
+    background-color: #ebeacd;
+} 
 
 table tr:active {
     background-color: rgb(211, 201, 69);
 }
+ */

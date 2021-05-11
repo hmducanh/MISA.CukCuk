@@ -39,20 +39,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr @dblclick="trOnDbClick()">
-                        <td><input type="checkbox"></td>
-                        <td>NV0000</td>
-                        <td>Nguyễn Phú Trọng</td>
-                        <td>Nam</td>
-                        <td>01/01/1200</td>
-                        <td>001200003322</td>
-                        <td>Chủ tịch nước</td>
-                        <td>Chính phủ</td>
-                        <td>250121232</td>
-                        <td>BIDV</td>
-                        <td>Hà Nội</td>
-                        <td></td>
-                    </tr>
                     <!-- get data from var -->
                     <tr v-for="employee in employees" :key='employee.employeeId' @dblclick="trOnDbClick(employee.employeeId)">
                         <td><input type="checkbox"></td>
@@ -66,7 +52,9 @@
                         <td>{{employee.bankAccount}}</td>
                         <td>{{employee.bankName}}</td>
                         <td>{{employee.bankBranch}}</td>
-                        <td></td>
+                        <td>
+                            <button class="btnDel" @click="btnDelOnClick(employee.employeeId)">Xóa</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -79,7 +67,6 @@
         :employee="selectedEmployee"
         :formMode="dialogFormMode"
         :departments="departments"
-        :Gender="Gender"
         />
     </div>
         
@@ -116,6 +103,14 @@ export default {
             // load du lieu
             axios.get("http://localhost:8080/api/v1/Employee").then(res => {
                 this.employees = res.data;
+                console.log(res);
+            }).catch(res => {
+                console.log(res);
+            });
+        },
+        btnDelOnClick(EmployeeId) {
+            axios.delete("http://localhost:8080/api/v1/Employee/" + EmployeeId).then(res => {
+                this.loadData();
                 console.log(res);
             }).catch(res => {
                 console.log(res);
@@ -199,7 +194,6 @@ export default {
             isShowDialogDetail: false,
             selectedEmployee: {},
             dialogFormMode: "add",
-            Gender: 0,
         };
     },
     watch : {},
@@ -264,5 +258,33 @@ export default {
     margin-top: 22px;
     right: 100px;
 }
+
+.btnDel {
+    display: inline-block;
+    outline: none;
+    border: none;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-right: -5px;
+    height: 40px;
+    width: 90px;
+    line-height: 30px;
+    background-color: rgb(216, 48, 48);
+    border-radius: 4px;
+    font-size: 13px;
+    color: #ffffff;
+    font-style: normal;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btnDel:hover {
+    background-color: #e73f3fb7;
+}
+
+.btnDel:active {
+    background-color: #e20404;
+}
+
 
 </style>

@@ -21,90 +21,92 @@
       <div class="dialog-body">
         <div class="m-row row-1">
           <div>
-            <label>Mã(<span style="color: red">*</span>)</label><br>
+            <label class="title">Mã(<span style="color: red">*</span>)</label><br>
             <input type="text" class="txtEmployeeCode" v-model="employee.employeeCode" :class="{ 'error-input': !isCheckEmployeeCode}">
           </div>
           <div>
-            <label>Tên(<span style="color: red">*</span>)</label><br>
+            <label label class="title">Tên(<span style="color: red">*</span>)</label><br>
             <input type="text" class="txtFullName" v-model="employee.fullName" :class="{ 'error-input': !isCheckFullName}">
           </div>
           <div>
-            <label>Ngày sinh</label><br>
+            <label label class="title">Ngày sinh</label><br>
             <input type="date" class="dateDateOfBirth" v-model="employee.dateOfBirth">
           </div>
           <div class="GenderContainer">
-            <label>Giới tính</label><br>
-            <a-radio-group v-model="employee.gender">
-            <a-radio :value="0">
-              Nam
-            </a-radio>
-            <a-radio :value="1">
-              Nữ
-            </a-radio>
-            <a-radio :value="2">
-              Khác
-            </a-radio>
-          </a-radio-group>
+            <label class="title">Giới tính</label><br>
+            <div>
+              <a-radio-group v-model="employee.gender" class="cover-gender">
+                <a-radio :value="0">
+                  Nam
+                </a-radio>
+                <a-radio :value="1">
+                  Nữ
+                </a-radio>
+                <a-radio :value="2">
+                  Khác
+                </a-radio>
+              </a-radio-group>
+            </div>
           </div>
         </div>
         <div class="m-row row-2">
           <div>
-            <label>Đơn vị(<span style="color: red">*</span>)</label><br>
+            <label label class="title">Đơn vị(<span style="color: red">*</span>)</label><br>
             <select name="" id="comboboxDepartment" v-model="employee.departmentName" :class="{ 'error-input': !isCheckDepartment}">
               <option v-for="department in departments" :key='department.departmentId'>{{department.departmentName}}</option>
               
             </select>
           </div>
           <div>
-            <label>Số CMND</label><br>
+            <label label class="title">Số CMND</label><br>
             <input type="text" class="txtIdentifyNumber" v-model="employee.identifyNumber">
           </div>
           <div>
-            <label>Ngày cấp</label><br>
+            <label label class="title">Ngày cấp</label><br>
             <input type="date" class="dateIdentifyDate" v-model="employee.identifyDate">
           </div>
         </div>
         <div class="m-row row-3">
           <div>
-            <label>Chức danh</label><br>
+            <label label class="title">Chức danh</label><br>
             <input type="text" class="txtPositionName" v-model="employee.positionName">
           </div>
           <div>
-            <label>Nơi cấp</label><br>
+            <label label class="title">Nơi cấp</label><br>
             <input type="text" class="txtIdentifyPlace" v-model="employee.identifyPlace">
           </div>
         </div>
         <div class="m-row row-4">
           <div>
-            <label>Địa chỉ</label><br>
+            <label label class="title">Địa chỉ</label><br>
             <input type="text" class="txtAddress" v-model="employee.address">
           </div>
         </div>
         <div class="m-row row-5">
           <div>
-            <label>ĐT di động</label><br>
+            <label label class="title">ĐT di động</label><br>
             <input type="text" class="txtPhoneNumber" v-model="employee.phoneNumber">
           </div>
           <div>
-            <label>ĐT cố định</label><br>
+            <label label class="title">ĐT cố định</label><br>
             <input type="text" class="txtConstantPhoneNumber" v-model="employee.constantPhoneNumber">
           </div>
           <div>
-            <label>Email</label><br>
+            <label label class="title">Email</label><br>
             <input type="text" class="txtEmail" v-model="employee.email">
           </div>
         </div>
         <div class="m-row row-6">
           <div>
-            <label>Tài khoản ngân hàng</label><br>
+            <label label class="title">Tài khoản ngân hàng</label><br>
             <input type="text" class="txtBankAccount" v-model="employee.bankAccount">
           </div>
           <div>
-            <label>Tên ngân hàng</label><br>
+            <label label class="title">Tên ngân hàng</label><br>
             <input type="text" class="txtBankName" v-model="employee.bankName">
           </div>
           <div>
-            <label>Chi nhánh</label><br>
+            <label label class="title">Chi nhánh</label><br>
             <input type="text" class="txtBankBranch" v-model="employee.bankBranch">
           </div>
         </div>
@@ -250,6 +252,10 @@ input[type="date"] {
   margin-top: 4px;
 }
 
+input:focus {
+  border-color: #019160;
+}
+
 .error-input {
   border-color: red !important;
 }
@@ -259,6 +265,20 @@ input[type="date"] {
   right: 34px;
   top: 10px;
   background-position: -88px -145px;
+}
+
+.cover-gender {
+  position: absolute;
+  right: 70px;
+  top: 28px;
+}
+
+.cover-gender:focus {
+  border-color: #019160;
+}
+
+.title {
+  font-weight: bold;
 }
 
 </style>
