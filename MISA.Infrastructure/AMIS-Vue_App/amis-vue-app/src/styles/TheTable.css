@@ -5,8 +5,10 @@ table {
 }
 
 table tr{
-    border-bottom: 1px solid #bbb;
-    height: 48px;
+    align-items: center;
+    line-height: 32px;
+    height: 32px;
+    background-color: #ECEEF1;
 }
 
 table thead th{
@@ -35,6 +37,24 @@ th:first-child, th:last-child, td:first-child, td:last-child{
 
 table tr{
     cursor: pointer;
+    border-bottom: 1px solid rgb(71, 65, 65);
+    
+}
+
+td {
+    border-right: 1px dashed #969696;
+}
+
+th {
+    border-right: 1px dashed #474545;
+}
+
+tr:hover {
+    background-color: #f7f7f7;
+}
+
+th {
+    height: 20px;
 }
 
 /*  table tr:hover{

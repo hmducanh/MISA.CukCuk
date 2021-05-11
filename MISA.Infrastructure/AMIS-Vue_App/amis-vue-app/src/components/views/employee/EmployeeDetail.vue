@@ -123,6 +123,7 @@
 
 <script>
 import axios from 'axios';
+
 export default {
   props : {
     isShow: {
@@ -147,7 +148,10 @@ export default {
     }
   },
   methods : {
-    // dong dialog
+      /* 
+      dong dialog va set cac bien kiem tra ve true
+      created by : hmducanh (9/5/2021)
+      */
       btnCloseOnClick() {
         this.$emit("hideDialog");
           this.isCheckEmpolyeeCode = true;
@@ -157,6 +161,10 @@ export default {
           this.isCheckFullName = true;
           
       },
+      /* 
+      kiem tra xem du lieu co hop le khong truoc khi gui len server
+      created by : hmducanh (10/5/2021)
+      */
       check_validate()
       {
         // kiem tra du lieu
@@ -195,15 +203,17 @@ export default {
         }
         return this.check;
       },
-      // an vao save button 
-      // created by : hmducanh (10/05/2021)
+      /* 
+      an vao save button 
+      created by : hmducanh (10/05/2021) 
+      */
       btnSaveOnClick() {
+        // goi ham kiem tra du lieu
         if(this.check_validate() == false)
         {
           return ;
         }
-        // check formmode
-        console.log(this.employee);
+        // check formmode xem la sua hay nhap moi
         if(this.formMode == "add")
         {
           axios.post("http://localhost:8080/api/v1/Employee", this.employee).then(res => {

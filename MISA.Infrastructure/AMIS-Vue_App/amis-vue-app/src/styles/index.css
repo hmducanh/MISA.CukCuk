@@ -5,6 +5,7 @@
 @import url("./TheEmployee.css");
 @import url("./TheDialog.css");
 @import url("./TheButton.css");
+@import url("./TheWarningDialog.css");
 
 .block-select{
   -webkit-user-select: none;

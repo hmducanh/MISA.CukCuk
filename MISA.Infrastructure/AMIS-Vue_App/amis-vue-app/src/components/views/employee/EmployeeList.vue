@@ -12,7 +12,7 @@
     <!-- input search va button refresh -->
     <div class = "content-table">
       <div class = "bar">
-            <input type="text" class = "search-table" placeholder="Tìm theo mã, tên nhân viên">
+            <input type="text" class = "search-table" placeholder="Tìm theo mã, tên nhân viên" @input="search_input($event)">
             <div class = "logo-item search-icon"></div>
             <div class = "logo-item refresh-button" @click="loadData()"></div>
             <div class = "logo-item export-button"></div>
@@ -23,7 +23,7 @@
                 <thead>
                     <tr class="line0">
                         <th>
-                            <input type="checkbox">
+                            <input type="checkbox" id="top-checkbox" @click="topCheckboxOnClick()">
                         </th>
                         <th>MÃ NHÂN VIÊN</th>
                         <th>TÊN NHÂN VIÊN</th>
@@ -39,9 +39,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- get data from var -->
+                    <!-- get data from api -->
                     <tr v-for="employee in employees" :key='employee.employeeId' @dblclick="trOnDbClick(employee.employeeId)">
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" v-bind:id="employee.employeeCode" @click="trCheckBoxOnClick(employee.employeeCode)"> </td>
                         <td>{{employee.employeeCode}}</td>
                         <td>{{employee.fullName}}</td>
                         <td>{{employee.genderName}}</td>
@@ -68,6 +68,11 @@
         :formMode="dialogFormMode"
         :departments="departments"
         />
+    <!-- warning when click delete button -->
+        <WarningDialog
+        :isShowWarning="isShowWarningDialog"
+        @hideWarningDialog="hideWarningDialog()"
+        />
     </div>
         
     </div>
@@ -76,20 +81,28 @@
 <script>
 import axios from "axios";
 import EmployeeDetail from "./EmployeeDetail.vue";
+import WarningDialog from './WarningDialog.vue';
 
 export default {
     components : {
         EmployeeDetail,
+        WarningDialog,
     },
+    /* 
+    load du lieu luc bat dau vao traang
+    created by : hmducanh (9/5/2021)
+    */
     created() {
-        // load du lieu
+        // lay danh sach nhan vien
         axios.get("http://localhost:8080/api/v1/Employee").then(res => {
             this.employees = res.data;
+            this.validEmployee = res.data;
+            console.log(this.employees);
             console.log(res);
         }).catch(res => {
             console.log(res);
         });
-
+        // lay danh sach don vi
         axios.get("http://localhost:8080/api/v1/Department").then(res => {
             this.departments = res.data;
             console.log(res);
@@ -99,24 +112,115 @@ export default {
     },
     props : [],
     methods : {
+        /* 
+        load lai data trong bang
+        created by : hmducanh (9/5/2021)
+        */
         loadData() {
-            // load du lieu
             axios.get("http://localhost:8080/api/v1/Employee").then(res => {
                 this.employees = res.data;
+                this.validEmployee = res.data;
                 console.log(res);
             }).catch(res => {
                 console.log(res);
             });
         },
+        /* 
+        click vao check box o trong table -> body -> row
+        nhan no va kiem tra xem tat ca checkbox co = true khong
+        neu co thi bat check cua header
+        created by : hmducanh (12/5/2021)
+        */
+        trCheckBoxOnClick(id) {
+            if(document.querySelector("#" + id).checked == false)
+                document.querySelector("#top-checkbox").checked = false;
+            else
+            {
+                for(let index in this.employees)
+                {
+                    var Id = "#" + `${this.employees[index].employeeCode}`;
+                    if(document.querySelector(Id).checked == false)
+                    {
+                        document.querySelector("#top-checkbox").checked = false;
+                        return ;
+                    }
+                }
+                document.querySelector("#top-checkbox").checked = true;
+            }
+        },
+        /* 
+        nhan su kien click vao check box cua header
+        sau do fill cac checkbox cua cac hang duoi tuong ung
+        created by : hmducanh (12/5/2021)
+        */
+        topCheckboxOnClick() {
+            this.topCheckboxstatus = document.querySelector("#top-checkbox").checked;
+            for(let index in this.employees)
+            {
+                var Id = "#" + `${this.employees[index].employeeCode}`;
+                document.querySelector(Id).checked = this.topCheckboxstatus;
+            }
+        },
+        /* 
+        kiem tra xem xau 'child' co phai la xau con cua xau 'father' khong 
+        dung de filter
+        created by : hmducanh (12/5/2021) 
+        */
+        check_substring(father, child)
+        {
+            if(child == "" || child == null)
+                return true;
+            for(let i = 0; i < (father.length - child.length + 1); i++)
+            {
+                this.check_sub = true;
+                for(let j = 0; j < child.length; j++)
+                {
+                    if(father[i + j] != child[j])
+                    {
+                        this.check_sub = false;
+                        break;
+                    }
+                }
+                if(this.check_sub == true)
+                    return true;
+            }
+            return false;
+        },
+        /* 
+        lien tuc nhan su kien tu input text de loc data
+        created by : hmducanh (12/5/2021)
+        */
+        search_input(event)
+        {
+            this.employees = [];
+            for(let index in this.validEmployee)
+            {
+                let input = event.target.value;
+                if(this.check_substring(this.validEmployee[index].employeeCode, input) || this.check_substring(this.validEmployee[index].fullName, input))
+                {
+                    this.employees.push(this.validEmployee[index]);
+                }
+            }
+        },
+        /* 
+        Click vao nut xoa
+        CreatedBy : hmducanh (12/5/2021)
+        */
         btnDelOnClick(EmployeeId) {
-            axios.delete("http://localhost:8080/api/v1/Employee/" + EmployeeId).then(res => {
+            this.isShowWarningDialog = true;
+            console.log(EmployeeId);
+            /* axios.delete("http://localhost:8080/api/v1/Employee/" + EmployeeId).then(res => {
                 this.loadData();
                 console.log(res);
             }).catch(res => {
                 console.log(res);
-            });
+            }); */
         },
-        // double click vao 1 hang trong bang de edit
+        
+        /* 
+        double click vao 1 hang trong bang de edit
+        created by : hmducanh (11/5/2021)
+        */
         trOnDbClick(EmployeeId) {
             axios.get("http://localhost:8080/api/v1/Employee/GetById/" + EmployeeId).then(res => {
                 this.selectedEmployee = res.data;
@@ -146,7 +250,10 @@ export default {
                 console.log(res);
             });
         },
-        // click vao button add employee
+        /* 
+        click vao button de add employee
+        created by : hmducanh (11/5/2021)
+        */
         btnAddOnClick() {
             axios.get("http://localhost:8080/api/v1/Employee/maxEmployeeCode").then(res => {
                 this.selectedEmployee = {};
@@ -158,16 +265,28 @@ export default {
                 console.log(res);
             });
         },
-        // hien thi - an dialog
+        /* 
+        // hien thi - an form dialog
+        // Created by : hmducanh (10/5/2021)
+        */
         hideDialog() {
             //an dialog
             this.isShowDialogDetail = false;
             // load lai data
             this.loadData();
-            
         },
+        /* 
+        // hien thi - an warning dialog
+        // Created by : hmducanh (12/5/2021)
+        */
+        hideWarningDialog() {
+            this.isShowWarningDialog = false;
+        },
+        /* 
+        chuyen doi ngay thang sang chuoi DDMMYYYY de hien thi duoc
+        created by : hmducanh (11/5/2021)
+        */
         formatDateDDMMYYYYnew(date) {
-            //chuyen doi ngay thang de hien thi duoc
             var newDate = new Date(date);
             var dateString = newDate.getDate();
             var monthString = newDate.getMonth() + 1;
@@ -188,12 +307,17 @@ export default {
         }
     },
     data() {
+        // cac bien toan cuc
         return {
             employees : [],
             departments : [],
             isShowDialogDetail: false,
             selectedEmployee: {},
             dialogFormMode: "add",
+            topCheckboxstatus: false,
+            check_sub: false,
+            validEmployee: [],
+            isShowWarningDialog : false,
         };
     },
     watch : {},
@@ -265,7 +389,7 @@ export default {
     border: none;
     padding-left: 24px;
     padding-right: 24px;
-    margin-right: -5px;
+    margin-right: 2px;
     height: 40px;
     width: 90px;
     line-height: 30px;
@@ -286,5 +410,14 @@ export default {
     background-color: #e20404;
 }
 
+input[type="checkbox"] {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+input[type="text"]:focus {
+    border-color: #019160;
+}
 
 </style>
