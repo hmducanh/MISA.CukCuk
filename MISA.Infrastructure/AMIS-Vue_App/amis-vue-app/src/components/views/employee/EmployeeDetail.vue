@@ -15,9 +15,11 @@
             
           </div>
         </div>
+        <!-- nut dong dialog -->
         <div class="dialog-close-button" @click="btnCloseOnClick()">
           &#x2715;
         </div>
+        <!-- cac input trong class -->
       <div class="dialog-body">
         <div class="m-row row-1">
           <div>
@@ -85,21 +87,21 @@
         <div class="m-row row-5">
           <div>
             <label label class="title">ĐT di động</label><br>
-            <input type="text" class="txtPhoneNumber" v-model="employee.phoneNumber">
+            <input type="text" class="txtPhoneNumber" v-model="employee.phoneNumber" :class="{ 'error-input': !isCheckPhoneNumber}">
           </div>
           <div>
             <label label class="title">ĐT cố định</label><br>
-            <input type="text" class="txtConstantPhoneNumber" v-model="employee.constantPhoneNumber">
+            <input type="text" class="txtConstantPhoneNumber" v-model="employee.constantPhoneNumber" :class="{ 'error-input': !isCheckConstantPhoneNumber}">
           </div>
           <div>
             <label label class="title">Email</label><br>
-            <input type="text" class="txtEmail" v-model="employee.email">
+            <input type="text" class="txtEmail" v-model="employee.email" :class="{ 'error-input': !isCheckEmail}">
           </div>
         </div>
         <div class="m-row row-6">
           <div>
             <label label class="title">Tài khoản ngân hàng</label><br>
-            <input type="text" class="txtBankAccount" v-model="employee.bankAccount">
+            <input type="text" class="txtBankAccount" v-model="employee.bankAccount" :class="{ 'error-input': !isCheckBankAccount}">
           </div>
           <div>
             <label label class="title">Tên ngân hàng</label><br>
@@ -149,17 +151,65 @@ export default {
   },
   methods : {
       /* 
-      dong dialog va set cac bien kiem tra ve true
-      created by : hmducanh (9/5/2021)
+      mac dinh lai cac ham kiem tra
+      created by : hmducanh (12/5/2021)
       */
-      btnCloseOnClick() {
-        this.$emit("hideDialog");
+      refresh()
+      {
           this.isCheckEmpolyeeCode = true;
           this.isCheckFullName = true;
           this.isCheckEmployeeCode = true;
           this.isCheckDepartment = true;
           this.isCheckFullName = true;
-          
+          this.isCheckBankAccount = true;
+          this.isCheckPhoneNumber = true;
+          this.isCheckConstantPhoneNumber = true;
+          this.isCheckEmail = true;
+      },
+      /* 
+      dong dialog va set cac bien kiem tra ve true
+      created by : hmducanh (9/5/2021)
+      */
+      btnCloseOnClick() {
+        this.$emit("hideDialog");
+        this.refresh();
+      },
+      /* 
+      check su hop le cua email
+      created by : hmducanh (12/5/2021)
+      */
+      check_valid_email(s)
+      {
+          let index1 = 0, index2 = 0, cnt = 0;
+          for(let i in s)
+          {
+              if(s[i] == '@')
+                  index1 = i;
+              if(s[i] == '.')
+              {
+                  cnt++;
+                  if(cnt > 1)
+                  {
+                    // khong cho 2 dau '.' lien nhau
+                    if(i - index2 == 1)
+                      return false;
+                  }
+                  index2 = i;
+              }
+              //ky tu hop le
+              if((s[i] >= '0' && s[i] <= '9') || (s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') || s[i] == '@' || s[i] == '.')
+              {
+                  //ok
+              }
+              else
+              {
+                  return false;
+              }
+          }
+          // @ khong dung dau cau va giua @ va '.' phai co ky tu la '.' khong dung cuoi
+          if((index1 > 0) && (index2 - index1 > 1) && (index2 != s.length - 1))
+              return true;
+          return false;
       },
       /* 
       kiem tra xem du lieu co hop le khong truoc khi gui len server
@@ -201,6 +251,42 @@ export default {
         {
           this.isCheckDepartment = true;
         }
+        // 2. kiem tra so dien thoai
+        for(let i in this.employee.phoneNumber)
+        {
+          if(isNaN(this.employee.phoneNumber[i]))
+          {
+            this.isCheckPhoneNumber = false;
+            this.check = false;
+            break;
+          }
+        }
+
+        for(let i in this.employee.constantPhoneNumber)
+        {
+          if(isNaN(this.employee.constantPhoneNumber[i]))
+          {
+            this.isCheckConstantPhoneNumber = false;
+            this.check = false;
+            break;
+          }
+        }
+        // 3. kiem tra tai khoan ngan hang
+        for(let i in this.employee.bankAccount)
+        {
+          if(isNaN(this.employee.bankAccount[i]))
+          {
+            this.isCheckBankAccount = false;
+            this.check = false;
+            break;
+          }
+        }
+        // 4. kiem tra email hop le
+        if(this.check_valid_email(this.employee.email) == false)
+        {
+          this.isCheckEmail = false;
+          this.check = false;
+        }
         return this.check;
       },
       /* 
@@ -218,6 +304,7 @@ export default {
         {
           axios.post("http://localhost:8080/api/v1/Employee", this.employee).then(res => {
           console.log(res);
+          this.refresh();
           this.$emit("hideDialog");
           }).catch(res => {
             console.log(res);
@@ -227,6 +314,7 @@ export default {
         {
           axios.put("http://localhost:8080/api/v1/Employee", this.employee).then(res => {
           console.log(res);
+          this.refresh();
           this.$emit("hideDialog");
           }).catch(res => {
             console.log(res);
@@ -239,6 +327,10 @@ export default {
       isCheckEmployeeCode : true,
       isCheckDepartment : true,
       isCheckFullName : true,
+      isCheckPhoneNumber : true,
+      isCheckConstantPhoneNumber : true,
+      isCheckBankAccount : true,
+      isCheckEmail : true,
       check : true,
       customGender : this.Gender,
     };

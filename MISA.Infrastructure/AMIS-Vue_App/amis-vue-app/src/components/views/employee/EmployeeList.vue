@@ -38,9 +38,9 @@
                         <th>CHỨC NĂNG</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody :class="{ 'hide-body': isLoading}">
                     <!-- get data from api -->
-                    <tr v-for="employee in employees" :key='employee.employeeId' @dblclick="trOnDbClick(employee.employeeId)">
+                    <tr v-for="employee in employees" :key='employee.employeeId'>
                         <td><input type="checkbox" v-bind:id="employee.employeeCode" @click="trCheckBoxOnClick(employee.employeeCode)"> </td>
                         <td>{{employee.employeeCode}}</td>
                         <td>{{employee.fullName}}</td>
@@ -53,12 +53,36 @@
                         <td>{{employee.bankName}}</td>
                         <td>{{employee.bankBranch}}</td>
                         <td>
-                            <button class="btnDel" @click="btnDelOnClick(employee.employeeId)">Xóa</button>
+                            <!-- <button class="btnDel" @click="btnDelOnClick(employee.employeeId)">Xóa</button> -->
+                            <div style="display: flex; margin-left: 24px;">
+                                <div class="edit-text" @click="trOnClick(employee.employeeId)">Sửa</div>
+                                <a-dropdown :trigger="['click']">
+                                    <a>
+                                        <a-icon style="margin-left:5px;font-weight:600; width: 20px;" type="down" />
+                                    </a>
+                                    <a-menu slot="overlay">
+                                        <a-menu-item key="0">
+                                            <a>Nhân bản</a>
+                                        </a-menu-item>
+                                    <a-menu-item @click="btnDelOnClick(employee.employeeId, employee.employeeCode)" key="1">
+                                        <a>Xóa</a>
+                                    </a-menu-item>
+                                    <a-menu-item key="2">
+                                        Ngừng sử dụng
+                                    </a-menu-item>
+                                    </a-menu>
+                                </a-dropdown>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
     </div>
+    <div class="footer">
+            <div>Tổng số <span style="font-weight: bold;"> {{totalEmployee}} </span> bản ghi</div>
+        </div>
+    <!-- icon loader -->
+        <div class="icon-loader" :class="{ 'icon-loader-show': !isLoading}"></div>
     <!-- tranfer data to employeedetail -->
         
         <EmployeeDetail
@@ -71,7 +95,9 @@
     <!-- warning when click delete button -->
         <WarningDialog
         :isShowWarning="isShowWarningDialog"
+        :employeeCode="employeeCode"
         @hideWarningDialog="hideWarningDialog()"
+        @status_delete="child_click"
         />
     </div>
         
@@ -80,6 +106,7 @@
 
 <script>
 import axios from "axios";
+import _lodash from "lodash";
 import EmployeeDetail from "./EmployeeDetail.vue";
 import WarningDialog from './WarningDialog.vue';
 
@@ -97,7 +124,7 @@ export default {
         axios.get("http://localhost:8080/api/v1/Employee").then(res => {
             this.employees = res.data;
             this.validEmployee = res.data;
-            console.log(this.employees);
+            this.totalEmployee = this.employees.length;
             console.log(res);
         }).catch(res => {
             console.log(res);
@@ -113,17 +140,27 @@ export default {
     props : [],
     methods : {
         /* 
+        chay gif xoay xoay khi loading data
+        created by : hmducanh (12/5/2021)
+        */
+        debounceLoadData:_lodash.debounce(function(){
+            this.isLoading = false;
+        },600),
+        /* 
         load lai data trong bang
         created by : hmducanh (9/5/2021)
         */
         loadData() {
+            this.isLoading = true;
             axios.get("http://localhost:8080/api/v1/Employee").then(res => {
                 this.employees = res.data;
                 this.validEmployee = res.data;
+                this.totalEmployee = this.employees.length;
                 console.log(res);
             }).catch(res => {
                 console.log(res);
             });
+            this.debounceLoadData();
         },
         /* 
         click vao check box o trong table -> body -> row
@@ -203,12 +240,33 @@ export default {
             }
         },
         /* 
+        nhan du lieu tu warning dialog xem co duoc xoa hay khong
+        Created by : hmducanh (12/5/2021)
+        */
+        child_click(value)
+        {
+            if(value == "0")
+            {
+                console.log("ko dc xoa");
+            }
+            else
+            {
+                axios.delete("http://localhost:8080/api/v1/Employee/" + this.delete_employeeId).then(res => {
+                this.loadData();
+                console.log(res);
+                }).catch(res => {
+                    console.log(res);
+                });
+            }
+        },
+        /* 
         Click vao nut xoa
         CreatedBy : hmducanh (12/5/2021)
         */
-        btnDelOnClick(EmployeeId) {
+        btnDelOnClick(EmployeeId, EmployeeCode) {
             this.isShowWarningDialog = true;
-            console.log(EmployeeId);
+            this.delete_employeeId = EmployeeId;
+            this.employeeCode = EmployeeCode;
             /* axios.delete("http://localhost:8080/api/v1/Employee/" + EmployeeId).then(res => {
                 this.loadData();
                 console.log(res);
@@ -221,7 +279,7 @@ export default {
         double click vao 1 hang trong bang de edit
         created by : hmducanh (11/5/2021)
         */
-        trOnDbClick(EmployeeId) {
+        trOnClick(EmployeeId) {
             axios.get("http://localhost:8080/api/v1/Employee/GetById/" + EmployeeId).then(res => {
                 this.selectedEmployee = res.data;
                 const _dateOfBirth = new Date(this.selectedEmployee.dateOfBirth); // ngay sinh
@@ -318,6 +376,10 @@ export default {
             check_sub: false,
             validEmployee: [],
             isShowWarningDialog : false,
+            delete_employeeId : "",
+            isLoading : false,
+            totalEmployee : 0,
+            employeeCode : "",
         };
     },
     watch : {},
@@ -389,7 +451,7 @@ export default {
     border: none;
     padding-left: 24px;
     padding-right: 24px;
-    margin-right: 2px;
+    margin-left: 4px;
     height: 40px;
     width: 90px;
     line-height: 30px;
@@ -414,10 +476,25 @@ input[type="checkbox"] {
     display: inline-block;
     width: 20px;
     height: 20px;
+    margin-top: 10px;
+    margin-left: 18px;
 }
 
 input[type="text"]:focus {
     border-color: #019160;
 }
 
+.icon-loader-show {
+    display: none;
+}
+
+.hide-body {
+    display: none;
+}
+
+.footer {
+    position: absolute;
+    bottom: 30px;
+    left: 50px;
+}
 </style>

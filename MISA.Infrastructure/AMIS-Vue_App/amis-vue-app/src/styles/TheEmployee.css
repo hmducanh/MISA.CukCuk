@@ -1,4 +1,40 @@
 .grid {
-    /* overflow: scroll; */
-    height: 520px;
+     overflow: scroll;  
+    position: absolute;
+    height: calc(100vh - 240px);
+    left: 24px;
+    right: 25px;
+    top: 130px;
 }
+
+.icon-loader{
+    z-index: 10000;
+    top:50%;
+    left: 50%;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../assets/loading.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 32px;
+    width: 32px;
+    transform: rotate(45deg 16deg 16deg);
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+
+}
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    80% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }

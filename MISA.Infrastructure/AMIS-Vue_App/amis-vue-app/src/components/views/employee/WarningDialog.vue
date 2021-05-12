@@ -10,12 +10,12 @@
         <div class="WDialog">
             <!-- logo canh bao -->
             <div class="logo-item warning-icon"></div>
-            <div class="line-1">Bạn có thực sự muốn xóa Nhân viên ...</div><br>
+            <div class="line-1">Bạn có thực sự muốn xóa Nhân viên {{employeeCode}}</div><br>
             <div class="line-2">không?</div>
             <div class="line-3">_________________________________________________________________</div>
             <!-- button truyen trang thai co hoac khong -->
-            <button class="btnNo" @click="close_dialog()">Không</button>
-            <button class="btnYes" @click="close_dialog()">Có</button>
+            <button class="btnNo" @click="close_dialog('0')">Không</button>
+            <button class="btnYes" @click="close_dialog('1')">Có</button>
         </div>
 
     </div>
@@ -28,10 +28,15 @@ export default ({
             type: Boolean,
             default: null,
         },
+        employeeCode: {
+            type: String,
+            default: null,
+        }
     },
     methods: {
-        close_dialog()
+        close_dialog(status)
         {
+            this.$emit('status_delete', status);
             this.$emit("hideWarningDialog");
         }
     },
