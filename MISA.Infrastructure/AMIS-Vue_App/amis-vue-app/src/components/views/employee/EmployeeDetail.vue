@@ -25,10 +25,13 @@
           <div>
             <label class="title">Mã(<span style="color: red">*</span>)</label><br>
             <input type="text" class="txtEmployeeCode" v-model="employee.employeeCode" :class="{ 'error-input': !isCheckEmployeeCode}">
+            <div :class="{ 'hide-msg': isCheckEmployeeCode}"><span style="font-size: 12px; color:red;"> {{msg_empty_employeeCode}} </span></div>
+            <div :class="{ 'hide-msg': isExistEmployeeCode}"><span style="font-size: 12px; color:red;"> {{msg_EmployeCodeExist}} </span></div>
           </div>
           <div>
             <label label class="title">Tên(<span style="color: red">*</span>)</label><br>
             <input type="text" class="txtFullName" v-model="employee.fullName" :class="{ 'error-input': !isCheckFullName}">
+            <div :class="{ 'hide-msg': isCheckFullName}"><span style="font-size: 12px; color:red;"> {{msg_empty_fullName}} </span></div>
           </div>
           <div>
             <label label class="title">Ngày sinh</label><br>
@@ -58,6 +61,7 @@
               <option v-for="department in departments" :key='department.departmentId'>{{department.departmentName}}</option>
               
             </select>
+            <div :class="{ 'hide-msg': isCheckDepartment}"><span style="font-size: 12px; color:red;"> {{msg_empty_departmentName}} </span></div>
           </div>
           <div>
             <label label class="title">Số CMND</label><br>
@@ -88,20 +92,24 @@
           <div>
             <label label class="title">ĐT di động</label><br>
             <input type="text" class="txtPhoneNumber" v-model="employee.phoneNumber" :class="{ 'error-input': !isCheckPhoneNumber}">
+            <div :class="{ 'hide-msg': isCheckPhoneNumber}"><span style="font-size: 12px; color:red;"> {{msg_phoneNumber}} </span></div>
           </div>
           <div>
             <label label class="title">ĐT cố định</label><br>
             <input type="text" class="txtConstantPhoneNumber" v-model="employee.constantPhoneNumber" :class="{ 'error-input': !isCheckConstantPhoneNumber}">
+            <div :class="{ 'hide-msg': isCheckConstantPhoneNumber}"><span style="font-size: 12px; color:red;"> {{msg_phoneNumber}} </span></div>
           </div>
           <div>
             <label label class="title">Email</label><br>
             <input type="text" class="txtEmail" v-model="employee.email" :class="{ 'error-input': !isCheckEmail}">
+            <div :class="{ 'hide-msg': isCheckEmail}"><span style="font-size: 12px; color:red;"> {{msg_email}} </span></div>
           </div>
         </div>
         <div class="m-row row-6">
           <div>
-            <label label class="title">Tài khoản ngân hàng</label><br>
+            <label label class="title">Tài khoản ngân hàng </label><br>
             <input type="text" class="txtBankAccount" v-model="employee.bankAccount" :class="{ 'error-input': !isCheckBankAccount}">
+            <div :class="{ 'hide-msg': isCheckBankAccount}"><span style="font-size: 12px; color:red;"> {{msg_bankAccount}} </span></div>
           </div>
           <div>
             <label label class="title">Tên ngân hàng</label><br>
@@ -212,6 +220,18 @@ export default {
           return false;
       },
       /* 
+      kiem tra co trung ma nhan vien da ton tai trong database khong
+      */
+      async checkExistEmployeeCode()
+      {
+        await axios.get("http://localhost:8080/api/v1/Employee/" + this.employee.employeeCode).then(res => {
+                this.isExistEmployeeCode = res.data;   
+            }).catch(res => {
+                console.log(res);
+            });
+        return this.isExistEmployeeCode;
+      },
+      /* 
       kiem tra xem du lieu co hop le khong truoc khi gui len server
       created by : hmducanh (10/5/2021)
       */
@@ -278,6 +298,7 @@ export default {
           {
             this.isCheckBankAccount = false;
             this.check = false;
+            console.log("backccc");
             break;
           }
         }
@@ -293,15 +314,22 @@ export default {
       an vao save button 
       created by : hmducanh (10/05/2021) 
       */
-      btnSaveOnClick() {
+      async btnSaveOnClick() {
         // goi ham kiem tra du lieu
-        if(this.check_validate() == false)
+         if(this.check_validate() == false)
         {
           return ;
-        }
+        } 
         // check formmode xem la sua hay nhap moi
         if(this.formMode == "add")
         {
+          // kiem tra ma nhan vien da ton tai trong database chua
+          this.isExistEmployeeCode = false;
+          if(await this.checkExistEmployeeCode() == true)
+          {
+            this.isCheckEmployeeCode = false;
+            return ;
+          }
           axios.post("http://localhost:8080/api/v1/Employee", this.employee).then(res => {
           console.log(res);
           this.refresh();
@@ -331,8 +359,16 @@ export default {
       isCheckConstantPhoneNumber : true,
       isCheckBankAccount : true,
       isCheckEmail : true,
+      isExistEmployeeCode : false,
       check : true,
       customGender : this.Gender,
+      msg_empty_employeeCode : "Mã nhân viên không được để trống !",
+      msg_empty_fullName : "Tên nhân viên không được để trống !",
+      msg_empty_departmentName : "Đơn vị không được để trống !",
+      msg_phoneNumber : "Số điện thoại không hợp lệ !",
+      msg_email : "Email không hợp lệ !",
+      msg_bankAccount : "Tài khoản ngân hàng không hợp lệ !",
+      msg_EmployeCodeExist: "Mã nhân viên đã tồn tại !",
     };
   }
 }
@@ -381,6 +417,10 @@ input:focus {
 
 .title {
   font-weight: bold;
+}
+
+.hide-msg {
+  display: none;
 }
 
 </style>

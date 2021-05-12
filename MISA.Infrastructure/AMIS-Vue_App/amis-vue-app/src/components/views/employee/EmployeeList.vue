@@ -61,13 +61,13 @@
                                         <a-icon style="margin-left:5px;font-weight:600; width: 20px;" type="down" />
                                     </a>
                                     <a-menu slot="overlay">
-                                        <a-menu-item key="0">
-                                            <a>Nhân bản</a>
+                                        <a-menu-item key="0" class="disable">
+                                            Nhân bản
                                         </a-menu-item>
                                     <a-menu-item @click="btnDelOnClick(employee.employeeId, employee.employeeCode)" key="1">
                                         <a>Xóa</a>
                                     </a-menu-item>
-                                    <a-menu-item key="2">
+                                    <a-menu-item key="2" class="disable">
                                         Ngừng sử dụng
                                     </a-menu-item>
                                     </a-menu>
@@ -496,5 +496,9 @@ input[type="text"]:focus {
     position: absolute;
     bottom: 30px;
     left: 50px;
+}
+
+.disable {
+    background-color: gray !important;
 }
 </style>
